@@ -1,0 +1,1262 @@
+/* ==========================================================================
+   CSS RESET & VARIABLE SYSTEM
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* Color Palette */
+    --color-bg-dark: #07070a;
+    --color-panel-wood: #1e130c;
+    --color-brass: #d4af37;
+    --color-brass-glow: rgba(212, 175, 55, 0.4);
+    
+    /* Glow Colors */
+    --glow-amber: #ff6a00;
+    --glow-amber-rgba: rgba(255, 106, 0, 0.6);
+    --glow-green: #39ff14;
+    --glow-green-rgba: rgba(57, 255, 20, 0.6);
+    --glow-red: #ff3b30;
+    --glow-red-rgba: rgba(255, 59, 48, 0.6);
+    
+    /* Typography */
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-digital: 'Share Tech Mono', monospace;
+    --font-cursive: 'Architects Daughter', cursive;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--color-bg-dark);
+    font-family: var(--font-ui);
+    color: #f5f5f7;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   AMBIENT GLOWS & BACKGROUND
+   ========================================================================== */
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.ambient-glow {
+    position: fixed;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.bg-glow-left {
+    background: radial-gradient(circle, var(--glow-amber-rgba) 0%, transparent 70%);
+    top: -20%;
+    left: -20%;
+}
+
+.bg-glow-right {
+    background: radial-gradient(circle, var(--glow-green-rgba) 0%, transparent 70%);
+    bottom: -20%;
+    right: -20%;
+}
+
+/* ==========================================================================
+   OVERLAY SCREENS (Fullscreen, Volume, Countdown)
+   ========================================================================== */
+.overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(5, 5, 8, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.overlay-container.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.glass-card {
+    background: rgba(20, 20, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 40px 48px;
+    width: 90%;
+    max-width: 520px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
+    opacity: 0;
+}
+
+.glass-card.active {
+    display: flex;
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.card-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: var(--color-brass);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    text-shadow: 0 0 10px var(--color-brass-glow);
+}
+
+.glass-card h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    color: #ffffff;
+}
+
+.glass-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #a1a1aa;
+    margin-bottom: 32px;
+    font-weight: 300;
+}
+
+/* Custom Buttons */
+.button-group {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.btn {
+    flex: 1;
+    padding: 16px 28px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: none;
+    outline: none;
+}
+
+.btn-primary {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+    background: #e4e4e7;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.35);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-glow {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-glow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transform: skewX(-25deg);
+    transition: 0.75s;
+}
+
+.btn-glow:hover::after {
+    left: 120%;
+}
+
+.icon-arrow {
+    transition: transform 0.3s ease;
+}
+
+.btn-glow:hover .icon-arrow {
+    transform: translateX(4px);
+}
+
+/* Countdown Step */
+.countdown-wrapper {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 32px;
+}
+
+.countdown-circle {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.circle-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 6;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: var(--color-brass);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.1s linear;
+    filter: drop-shadow(0 0 8px var(--color-brass-glow));
+}
+
+.countdown-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-digital);
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.countdown-messages {
+    min-height: 80px;
+}
+
+.msg-highlight {
+    font-family: var(--font-digital);
+    color: var(--color-brass);
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    text-shadow: 0 0 8px var(--color-brass-glow);
+}
+
+.msg-fade {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    color: #71717a;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   MAIN DASHBOARD CONTAINER
+   ========================================================================== */
+.dashboard-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.dashboard-container.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* The Radio Cabinet Box */
+.radio-console {
+    position: relative;
+    width: 90%;
+    max-width: 1100px;
+    height: 580px;
+    background: #14131a url('assets/radio_bg.png') no-repeat center center;
+    background-size: cover;
+    border-radius: 40px;
+    border: 8px solid #2e1d11; /* Rich Mahogany wooden outer border */
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8),
+                inset 0 4px 20px rgba(255, 255, 255, 0.05),
+                0 0 0 2px #1f140c,
+                0 15px 35px -10px rgba(255, 106, 0, 0.25);
+    display: grid;
+    grid-template-columns: 280px 1fr 160px;
+    overflow: hidden;
+    padding: 24px;
+    gap: 20px;
+    z-index: 5;
+}
+
+/* ==========================================================================
+   LEFT PANEL: TURNTABLE
+   ========================================================================== */
+.turntable-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.01);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+    position: relative;
+    height: 100%;
+}
+
+.turntable-base {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    background: #1a1a24;
+    border-radius: 50%;
+    border: 4px solid #101016;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5),
+                inset 0 2px 8px rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Spinning Vinyl Record */
+.vinyl-record-wrap {
+    position: relative;
+    width: 216px;
+    height: 216px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.vinyl-record {
+    width: 100%;
+    height: 100%;
+    background: #0d0d11;
+    border-radius: 50%;
+    position: relative;
+    transform: rotate(0deg);
+    transition: transform 0.5s ease-out;
+}
+
+/* Concentric Vinyl Grooves */
+.vinyl-grooves {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: repeating-radial-gradient(
+        circle,
+        #0f0f13,
+        #0d0d11 1px,
+        #0f0f13 2px,
+        #121217 3px
+    );
+    opacity: 0.95;
+}
+
+/* Vinyl Spin Keyframe Animation */
+@keyframes spin-vinyl {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.vinyl-record.spinning {
+    animation: spin-vinyl 2.5s linear infinite;
+}
+
+/* Vinyl Label Center */
+.vinyl-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 76px;
+    height: 76px;
+    background: #c93b3b;
+    border-radius: 50%;
+    border: 3px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.label-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+}
+
+.label-title {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    max-width: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+}
+
+.label-subtitle {
+    font-size: 0.45rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 2px;
+}
+
+/* Tonearm needle assembly */
+.tonearm {
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    width: 80px;
+    height: 200px;
+    z-index: 10;
+    transform-origin: 40px 30px;
+    transform: rotate(0deg);
+    transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+}
+
+/* Pivot position states for tonearm */
+.tonearm.playing {
+    transform: rotate(26deg);
+}
+
+.tonearm-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.turntable-knob {
+    position: absolute;
+    bottom: 12px;
+    right: 25px;
+    width: 20px;
+    height: 200px;
+    display: none; /* Spacer or optional dial knob styling */
+}
+
+/* ==========================================================================
+   CENTER PANEL: CRT RETRO TELEVISION
+   ========================================================================== */
+.crt-tv-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.crt-bezel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #25242e; /* Dark plastic/bakelite TV housing */
+    border: 12px solid #1b1b22;
+    border-radius: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7),
+                inset 0 2px 10px rgba(255, 255, 255, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.5);
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    padding: 10px;
+    gap: 10px;
+    overflow: hidden;
+}
+
+/* Screen Glass Curved Container */
+.crt-screen-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 3px solid #121217;
+    box-shadow: inset 0 0 40px rgba(0,0,0,1);
+}
+
+.crt-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #111411; /* Off-state dark green tint */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px;
+    transition: background-color 0.5s ease;
+}
+
+/* CRT States */
+.crt-screen.screen-off {
+    background-color: #000000 !important;
+}
+
+.crt-screen.screen-off * {
+    opacity: 0 !important;
+}
+
+/* CRT Visual Overlays: Scanlines, Vignette, Reflection, Flicker */
+.crt-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+    ), linear-gradient(
+        90deg, 
+        rgba(255, 0, 0, 0.06), 
+        rgba(0, 255, 0, 0.02), 
+        rgba(0, 0, 255, 0.06)
+    );
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+}
+
+/* Subtle Phosphor Glow & Flicker */
+@keyframes crt-flicker-anim {
+    0% { opacity: 0.985; }
+    50% { opacity: 1; }
+    100% { opacity: 0.99; }
+}
+
+.crt-flicker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    background: rgba(34, 255, 85, 0.015);
+    pointer-events: none;
+    animation: crt-flicker-anim 0.15s infinite;
+}
+
+/* Darkened screen borders (Vignette) */
+.crt-vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 98;
+    background: radial-gradient(
+        circle,
+        transparent 50%,
+        rgba(0, 0, 0, 0.8) 120%
+    );
+    pointer-events: none;
+}
+
+/* Glass Screen Reflection Highlight */
+.crt-reflection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 97;
+    background: radial-gradient(
+        circle at 50% 0%,
+        rgba(255, 255, 255, 0.08) 0%,
+        transparent 60%
+    );
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   POLAROID CAROUSEL SLIDESHOW
+   ========================================================================== */
+.polaroid-carousel-container {
+    position: relative;
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    margin-top: 10px;
+}
+
+.polaroid-carousel-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The Polaroid Item */
+.polaroid-slide {
+    position: absolute;
+    width: 190px;
+    height: 220px;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+                opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+                z-index 0.8s step-end;
+    opacity: 0;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.polaroid-card {
+    width: 100%;
+    height: 100%;
+    background: #f7f5f0; /* Retro white photo paper */
+    padding: 10px 10px 24px 10px;
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6),
+                0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.polaroid-photo-frame {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background: #000;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.polaroid-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(0.6) contrast(1.1) brightness(0.95);
+    transition: filter 0.5s ease;
+}
+
+.polaroid-inner-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+    pointer-events: none;
+}
+
+.polaroid-caption {
+    font-family: var(--font-cursive);
+    font-size: 1.1rem;
+    color: #2b2b2b;
+    text-align: center;
+    margin-top: 8px;
+    font-weight: bold;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* 3D Stack States for Carousel */
+.polaroid-slide.active {
+    transform: translate3d(0, 0, 50px) rotate(0deg) scale(1.05);
+    opacity: 1;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.polaroid-slide.prev {
+    transform: translate3d(-105px, 0, -40px) rotate(-8deg) scale(0.85);
+    opacity: 0.7;
+    z-index: 5;
+}
+
+.polaroid-slide.next {
+    transform: translate3d(105px, 0, -40px) rotate(8deg) scale(0.85);
+    opacity: 0.7;
+    z-index: 5;
+}
+
+.polaroid-slide.hidden {
+    transform: translate3d(0, 0, -150px) rotate(0deg) scale(0.6);
+    opacity: 0;
+    z-index: 0;
+}
+
+/* Navigation Arrow Overlays */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 120;
+    transition: all 0.3s ease;
+    opacity: 0; /* Visible on container hover */
+}
+
+.polaroid-carousel-container:hover .carousel-arrow {
+    opacity: 1;
+}
+
+.carousel-arrow:hover {
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.arrow-left { left: 4px; }
+.arrow-right { right: 4px; }
+
+/* ==========================================================================
+   CRT DISPLAY FOOTER
+   ========================================================================== */
+.crt-screen-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-digital);
+    font-size: 0.85rem;
+    color: var(--glow-green);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 6px var(--glow-green-rgba);
+    border-top: 1px solid rgba(34, 255, 85, 0.15);
+    padding-top: 10px;
+    z-index: 10;
+}
+
+.footer-title {
+    font-weight: bold;
+}
+
+/* Carousel Indicators (Dots) */
+.carousel-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: rgba(34, 255, 85, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background-color: var(--glow-green);
+    box-shadow: 0 0 8px var(--glow-green);
+}
+
+.footer-date {
+    font-weight: 300;
+}
+
+/* ==========================================================================
+   CRT RIGHT BAR: CONTROLS
+   ========================================================================== */
+.crt-control-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-left: 2px solid #181820;
+    height: 100%;
+}
+
+/* Rotatable channel dials */
+.crt-dial {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #181822 0%, #2f2f3e 100%);
+    border-radius: 50%;
+    border: 3px solid #111;
+    box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.1),
+                0 4px 10px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: transform 0.4s ease;
+}
+
+.dial-inner {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    width: 3px;
+    height: 12px;
+    background: var(--color-brass);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    box-shadow: 0 0 4px var(--color-brass-glow);
+}
+
+/* Toggle Switch (Play/Pause) */
+.power-switch-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.power-switch-btn {
+    position: relative;
+    width: 40px;
+    height: 52px;
+    background: #111116;
+    border-radius: 8px;
+    border: 2px solid #2f2f3e;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+}
+
+.switch-toggle {
+    width: 24px;
+    height: 20px;
+    background: linear-gradient(to bottom, #d4af37 0%, #aa841c 100%);
+    border-radius: 4px;
+    border: 1px solid #775b10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+    transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateY(14px); /* Lowered position initially (PLAY) */
+}
+
+/* Toggled On State (PAUSE) */
+.power-switch-btn.play-active .switch-toggle {
+    transform: translateY(-2px); /* Lifted position when playing */
+    background: linear-gradient(to bottom, #eeeeee 0%, #999999 100%);
+    border-color: #666;
+    box-shadow: 0 0 8px rgba(255,255,255,0.2);
+}
+
+.switch-label {
+    font-family: var(--font-digital);
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: #8e8e93;
+    letter-spacing: 0.05em;
+}
+
+/* Status Indicator LED */
+.led-indicator-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.led-light {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #331111;
+    border: 1px solid #111;
+    transition: all 0.4s ease;
+}
+
+.led-green {
+    background-color: var(--glow-green);
+    box-shadow: 0 0 10px var(--glow-green),
+                0 0 2px var(--glow-green);
+}
+
+.led-red {
+    background-color: var(--glow-red);
+    box-shadow: 0 0 10px var(--glow-red);
+}
+
+.led-label {
+    font-family: var(--font-digital);
+    font-size: 0.55rem;
+    color: #8e8e93;
+}
+
+/* ==========================================================================
+   RIGHT PANEL: VACUUM TUBES & KNOBS
+   ========================================================================== */
+.retro-details-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 20px 0;
+}
+
+/* Glowing Vacuum Tubes */
+.vacuum-tubes-container {
+    display: flex;
+    gap: 20px;
+}
+
+.vacuum-tube {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tube-glass {
+    position: relative;
+    width: 32px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px 16px 4px 4px;
+    box-shadow: inset 0 5px 15px rgba(255,255,255,0.08);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tube-filament {
+    width: 4px;
+    height: 48px;
+    background: #331f13;
+    border-radius: 2px;
+    transition: all 1.5s ease;
+}
+
+/* Tube Glow animation when system is active */
+.tube-filament.glowing {
+    background: #ffa834;
+    box-shadow: 0 0 15px #ff5500,
+                0 0 30px #ff3300,
+                0 0 5px rgba(255, 106, 0, 0.6);
+}
+
+.tube-base {
+    width: 36px;
+    height: 10px;
+    background: #2c2c35;
+    border-radius: 2px;
+    border: 1px solid #111;
+}
+
+/* Radio Frequency Analog Dial Display */
+.radio-frequency-display {
+    position: relative;
+    width: 110px;
+    height: 240px;
+    background: #111116;
+    border: 3px solid #2a2a35;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+}
+
+.frequency-scale {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        transparent 9%, 
+        rgba(255,255,255,0.04) 10%, 
+        transparent 11%
+    );
+    background-size: 100% 20px;
+    border-left: 2px solid rgba(255, 106, 0, 0.15);
+    border-right: 2px solid rgba(255, 106, 0, 0.15);
+}
+
+.frequency-scale::before {
+    content: '108\A 104\A 100\A 96\A 92\A 88';
+    white-space: pre-wrap;
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    font-family: var(--font-digital);
+    font-size: 0.65rem;
+    line-height: 2.85;
+    color: rgba(255, 106, 0, 0.35);
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 2px rgba(255, 106, 0, 0.1);
+}
+
+.frequency-scale::after {
+    content: 'AM  FM\A\A 1600\A 1200\A 1000\A 800\A 700\A 600';
+    white-space: pre-wrap;
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    text-align: right;
+    font-family: var(--font-digital);
+    font-size: 0.62rem;
+    line-height: 2.3;
+    color: rgba(255, 106, 0, 0.35);
+}
+
+/* Glowing Indicator Needle Line */
+.frequency-pointer {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    background: #ff5500;
+    box-shadow: 0 0 8px #ff2200, 0 0 2px #ff2200;
+    z-index: 10;
+    transition: top 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ==========================================================================
+   SOCIAL LINKS & HIDDEN SYSTEM ELEMENTS
+   ========================================================================== */
+.social-bar {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    gap: 16px;
+    z-index: 50;
+}
+
+.social-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    color: #a1a1aa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-decoration: none;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4),
+                0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+.hidden-player-container {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   RESPONSIVENESS (MOBILE FRIENDLY)
+   ========================================================================== */
+@media (max-width: 992px) {
+    .radio-console {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-width: 500px;
+        padding: 16px;
+        gap: 16px;
+        border-radius: 28px;
+    }
+    
+    .turntable-panel {
+        height: 260px;
+        padding: 10px;
+    }
+    
+    .turntable-base {
+        width: 210px;
+        height: 210px;
+    }
+    
+    .vinyl-record-wrap {
+        width: 190px;
+        height: 190px;
+    }
+    
+    .vinyl-label {
+        width: 66px;
+        height: 66px;
+    }
+
+    .tonearm {
+        width: 70px;
+        height: 170px;
+        top: -15px;
+    }
+
+    .crt-bezel {
+        grid-template-columns: 1fr;
+        padding: 8px;
+        border-radius: 20px;
+    }
+
+    .crt-screen-container {
+        height: 300px;
+    }
+
+    .polaroid-slide {
+        width: 165px;
+        height: 195px;
+    }
+
+    .polaroid-photo-frame {
+        height: 135px;
+    }
+
+    .polaroid-slide.prev {
+        transform: translate3d(-80px, 0, -40px) rotate(-8deg) scale(0.85);
+    }
+    
+    .polaroid-slide.next {
+        transform: translate3d(80px, 0, -40px) rotate(8deg) scale(0.85);
+    }
+
+    .crt-control-bar {
+        flex-direction: row;
+        border-left: none;
+        border-top: 2px solid #181820;
+        padding: 12px 10px 0 10px;
+        justify-content: space-between;
+        width: 100%;
+        height: auto;
+    }
+
+    .crt-dial {
+        width: 40px;
+        height: 40px;
+    }
+
+    .power-switch-container {
+        width: auto;
+    }
+
+    .power-switch-btn {
+        width: 54px;
+        height: 38px;
+        flex-direction: row;
+        padding: 0 8px;
+    }
+
+    .switch-toggle {
+        transform: translateX(-10px);
+    }
+
+    .power-switch-btn.play-active .switch-toggle {
+        transform: translateX(10px);
+    }
+
+    .retro-details-panel {
+        display: none; /* Hide vacuum tubes panel on mobile to optimize space */
+    }
+
+    .social-bar {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin-top: 16px;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-card {
+        padding: 24px;
+    }
+    
+    .glass-card h2 {
+        font-size: 1.5rem;
+    }
+
+    .polaroid-slide.prev {
+        transform: translate3d(-55px, 0, -30px) rotate(-6deg) scale(0.85);
+    }
+    
+    .polaroid-slide.next {
+        transform: translate3d(55px, 0, -30px) rotate(6deg) scale(0.85);
+    }
+}
