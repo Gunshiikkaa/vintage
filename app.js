@@ -32,13 +32,11 @@ const statusLed = document.getElementById('status-led');
 const displayDate = document.getElementById('display-date');
 const frequencyPointer = document.querySelector('.frequency-pointer');
 
-// Carousel Elements
+// Polaroid Marquee Elements
 const carouselTrack = document.getElementById('carousel-track');
-const slides = Array.from(document.querySelectorAll('.polaroid-slide'));
-const dots = Array.from(document.querySelectorAll('.dot'));
-const btnPrevSlide = document.getElementById('btn-prev-slide');
-const btnNextSlide = document.getElementById('btn-next-slide');
-let currentSlideIndex = 1; // Start with active middle slide
+let slides = [];
+let dots = [];
+let lastActiveIndex = -1;
 
 /* ==========================================================================
    DATE TRACKING INITIALIZATION
@@ -234,8 +232,8 @@ function setPlaybackState(play) {
         // Trigger pointer line position shift micro-interaction
         frequencyPointer.style.top = `${30 + Math.random() * 40}%`;
 
-        // Start slide autoplay
-        startAutoplay();
+        // Start marquee scrolling
+        carouselTrack.classList.add('scrolling');
     } else {
         // Pause record & lift tonearm
         vinylRecord.classList.remove('spinning');
@@ -252,8 +250,8 @@ function setPlaybackState(play) {
         // Reset pointer position
         frequencyPointer.style.top = '50%';
 
-        // Stop slide autoplay
-        stopAutoplay();
+        // Pause marquee scrolling
+        carouselTrack.classList.remove('scrolling');
     }
 }
 
@@ -340,52 +338,75 @@ function finishWarmup() {
 }
 
 /* ==========================================================================
-   POLAROID SLIDESHOW CAROUSEL LOGIC
+   POLAROID MARQUEE SCROLLING LOGIC
    ========================================================================== */
-function updateSlides() {
-    const totalSlides = slides.length;
+function initMarquee() {
+    const originalSlides = Array.from(carouselTrack.children);
     
-    slides.forEach((slide, index) => {
-        slide.classList.remove('active', 'prev', 'next', 'hidden');
+    // Clone original slides to create a seamless loop
+    originalSlides.forEach(slide => {
+        const clone = slide.cloneNode(true);
+        clone.classList.add('slide-clone');
+        carouselTrack.appendChild(clone);
+    });
+    
+    // Track all slides (original + clones)
+    slides = Array.from(carouselTrack.children);
+    
+    // Render dots dynamically based on original slides count (9 dots)
+    const dotsContainer = document.querySelector('.carousel-dots');
+    dotsContainer.innerHTML = '';
+    
+    originalSlides.forEach((slide, index) => {
+        const dot = document.createElement('span');
+        dot.className = 'dot' + (index === 0 ? ' active' : '');
+        dot.dataset.index = index;
+        dotsContainer.appendChild(dot);
+    });
+    
+    dots = Array.from(document.querySelectorAll('.carousel-dots .dot'));
+    
+    // Initialize date with the first slide's date
+    if (originalSlides.length > 0) {
+        displayDate.textContent = originalSlides[0].dataset.date;
+    }
+}
+
+function updateActiveSlideTracker() {
+    // Only run if screen is active and we are playing
+    if (crtScreen.classList.contains('screen-off')) return;
+    
+    const containerRect = crtScreen.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+    
+    let closestSlide = null;
+    let minDistance = Infinity;
+    let closestIndex = 0;
+    
+    // Check all slides to find which one is currently in the horizontal center of the CRT screen
+    slides.forEach((slide) => {
+        const rect = slide.getBoundingClientRect();
+        const slideCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(slideCenter - containerCenter);
         
-        if (index === currentSlideIndex) {
-            slide.classList.add('active');
-        } else if (index === (currentSlideIndex - 1 + totalSlides) % totalSlides) {
-            slide.classList.add('prev');
-        } else if (index === (currentSlideIndex + 1) % totalSlides) {
-            slide.classList.add('next');
-        } else {
-            slide.classList.add('hidden');
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestSlide = slide;
+            closestIndex = parseInt(slide.dataset.index);
         }
     });
-
-    // Update dots indicator
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentSlideIndex);
-    });
-}
-
-function nextSlide() {
-    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-    updateSlides();
-}
-
-function prevSlide() {
-    currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-    updateSlides();
-}
-
-function startAutoplay() {
-    stopAutoplay();
-    autoplayInterval = setInterval(() => {
-        nextSlide();
-    }, 5500); // Shift Polaroid photos every 5.5 seconds
-}
-
-function stopAutoplay() {
-    if (autoplayInterval) {
-        clearInterval(autoplayInterval);
-        autoplayInterval = null;
+    
+    if (closestSlide && closestIndex !== lastActiveIndex) {
+        lastActiveIndex = closestIndex;
+        
+        // Sync dots
+        dots.forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === closestIndex);
+        });
+        
+        // Sync display date in footer
+        const activeDate = closestSlide.dataset.date;
+        displayDate.textContent = activeDate;
     }
 }
 
@@ -503,6 +524,9 @@ function animateParticles() {
         }
     });
     
+    // Track active slide in the center of the CRT screen
+    updateActiveSlideTracker();
+    
     requestAnimationFrame(animateParticles);
 }
 
@@ -538,15 +562,23 @@ function setupEventListeners() {
         togglePlayback();
     });
 
-    // TV channel dial rotation micro-interaction
+    // TV channel dial rotation micro-interaction (speeds up marquee + channel static flicker overlay)
     const channelDial = document.querySelector('.dial-channel');
     let channelAngle = 0;
     channelDial.addEventListener('click', () => {
         channelAngle += 30;
         channelDial.style.transform = `rotate(${channelAngle}deg)`;
         
-        // Cycle images on channel rotation
-        nextSlide();
+        // Speed up scroll temporarily to scan photos
+        carouselTrack.style.animationDuration = '4s';
+        
+        // Add screen flicker
+        crtScreen.classList.add('crt-flicker-active');
+        
+        setTimeout(() => {
+            carouselTrack.style.animationDuration = '24s';
+            crtScreen.classList.remove('crt-flicker-active');
+        }, 1500);
     });
 
     // TV volume dial rotation micro-interaction
@@ -563,42 +595,13 @@ function setupEventListeners() {
             player.setVolume(newVolume > 100 ? 50 : newVolume);
         }
     });
-
-    // Slide Carousel clicks
-    slides.forEach(slide => {
-        slide.addEventListener('click', () => {
-            const idx = parseInt(slide.dataset.index);
-            if (idx !== currentSlideIndex) {
-                currentSlideIndex = idx;
-                updateSlides();
-            }
-        });
-    });
-
-    // Dot Indicators
-    dots.forEach(dot => {
-        dot.addEventListener('click', () => {
-            currentSlideIndex = parseInt(dot.dataset.index);
-            updateSlides();
-        });
-    });
-
-    // Slider arrows
-    btnPrevSlide.addEventListener('click', (e) => {
-        e.stopPropagation();
-        prevSlide();
-    });
-
-    btnNextSlide.addEventListener('click', (e) => {
-        e.stopPropagation();
-        nextSlide();
-    });
 }
 
 /* ==========================================================================
    APP BOOTSTRAP
    ========================================================================== */
 function init() {
+    initMarquee();
     initializeDate();
     initYoutubePlayer();
     setupEventListeners();

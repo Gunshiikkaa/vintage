@@ -114,11 +114,11 @@
                             <div class="crt-vignette"></div>
                             <div class="crt-reflection"></div>
                             
-                            <!-- Inside Screen: Polaroid Slideshow Carousel -->
+                            <!-- Inside Screen: Polaroid Slideshow Marquee -->
                             <div class="polaroid-carousel-container">
                                 <div id="carousel-track" class="polaroid-carousel-track">
                                     <!-- Polaroid 1 (Friends) -->
-                                    <div class="polaroid-slide prev" data-index="0">
+                                    <div class="polaroid-slide" data-index="0" data-date="MAY 15, 2026" data-caption="sweet memories...">
                                         <div class="polaroid-card">
                                             <div class="polaroid-photo-frame">
                                                 <img src="assets/memory1.png" alt="Sweet Memories" class="polaroid-photo">
@@ -127,8 +127,8 @@
                                             <div class="polaroid-caption">sweet memories...</div>
                                         </div>
                                     </div>
-                                    <!-- Polaroid 2 (Couple - Active) -->
-                                    <div class="polaroid-slide active" data-index="1">
+                                    <!-- Polaroid 2 (Couple) -->
+                                    <div class="polaroid-slide" data-index="1" data-date="OCT 24, 2025" data-caption="lost in moments ♥">
                                         <div class="polaroid-card">
                                             <div class="polaroid-photo-frame">
                                                 <img src="assets/memory2.png" alt="Lost In Moments" class="polaroid-photo">
@@ -137,8 +137,8 @@
                                             <div class="polaroid-caption">lost in moments ♥</div>
                                         </div>
                                     </div>
-                                    <!-- Polaroid 3 (Sunset) -->
-                                    <div class="polaroid-slide next" data-index="2">
+                                    <!-- Polaroid 3 (Campfire) -->
+                                    <div class="polaroid-slide" data-index="2" data-date="AUG 02, 2025" data-caption="endless summer ☀">
                                         <div class="polaroid-card">
                                             <div class="polaroid-photo-frame">
                                                 <img src="assets/memory3.png" alt="Endless Summer" class="polaroid-photo">
@@ -147,19 +147,67 @@
                                             <div class="polaroid-caption">endless summer ☀</div>
                                         </div>
                                     </div>
+                                    <!-- Polaroid 4 (Beach) -->
+                                    <div class="polaroid-slide" data-index="3" data-date="DEC 12, 2025" data-caption="sandy beaches 🌊">
+                                        <div class="polaroid-card">
+                                            <div class="polaroid-photo-frame">
+                                                <img src="assets/memory4.png" alt="Sandy Beaches" class="polaroid-photo">
+                                                <div class="polaroid-inner-glow"></div>
+                                            </div>
+                                            <div class="polaroid-caption">sandy beaches 🌊</div>
+                                        </div>
+                                    </div>
+                                    <!-- Polaroid 5 (Coffee) -->
+                                    <div class="polaroid-slide" data-index="4" data-date="JAN 18, 2026" data-caption="cozy mornings ☕">
+                                        <div class="polaroid-card">
+                                            <div class="polaroid-photo-frame">
+                                                <img src="assets/memory5.png" alt="Cozy Mornings" class="polaroid-photo">
+                                                <div class="polaroid-inner-glow"></div>
+                                            </div>
+                                            <div class="polaroid-caption">cozy mornings ☕</div>
+                                        </div>
+                                    </div>
+                                    <!-- Polaroid 6 (Roadtrip) -->
+                                    <div class="polaroid-slide" data-index="5" data-date="FEB 22, 2026" data-caption="on the road 🚗">
+                                        <div class="polaroid-card">
+                                            <div class="polaroid-photo-frame">
+                                                <img src="assets/memory6.png" alt="On The Road" class="polaroid-photo">
+                                                <div class="polaroid-inner-glow"></div>
+                                            </div>
+                                            <div class="polaroid-caption">on the road 🚗</div>
+                                        </div>
+                                    </div>
+                                    <!-- Polaroid 7 (Guitar) -->
+                                    <div class="polaroid-slide" data-index="6" data-date="APR 05, 2026" data-caption="guitar strings 🎸">
+                                        <div class="polaroid-card">
+                                            <div class="polaroid-photo-frame">
+                                                <img src="assets/memory7.png" alt="Guitar Strings" class="polaroid-photo">
+                                                <div class="polaroid-inner-glow"></div>
+                                            </div>
+                                            <div class="polaroid-caption">guitar strings 🎸</div>
+                                        </div>
+                                    </div>
+                                    <!-- Polaroid 8 (Records) -->
+                                    <div class="polaroid-slide" data-index="7" data-date="MAY 01, 2026" data-caption="vinyl crates 🎵">
+                                        <div class="polaroid-card">
+                                            <div class="polaroid-photo-frame">
+                                                <img src="assets/memory8.png" alt="Vinyl Crates" class="polaroid-photo">
+                                                <div class="polaroid-inner-glow"></div>
+                                            </div>
+                                            <div class="polaroid-caption">vinyl crates 🎵</div>
+                                        </div>
+                                    </div>
+                                    <!-- Polaroid 9 (Bicycle) -->
+                                    <div class="polaroid-slide" data-index="8" data-date="JUN 01, 2026" data-caption="flower basket 🚲">
+                                        <div class="polaroid-card">
+                                            <div class="polaroid-photo-frame">
+                                                <img src="assets/memory9.png" alt="Flower Basket" class="polaroid-photo">
+                                                <div class="polaroid-inner-glow"></div>
+                                            </div>
+                                            <div class="polaroid-caption">flower basket 🚲</div>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <!-- Slide Navigation Arrows (Hover overlays) -->
-                                <button id="btn-prev-slide" class="carousel-arrow arrow-left" aria-label="Previous Slide">
-                                    <svg viewBox="0 0 24 24" width="24" height="24">
-                                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </button>
-                                <button id="btn-next-slide" class="carousel-arrow arrow-right" aria-label="Next Slide">
-                                    <svg viewBox="0 0 24 24" width="24" height="24">
-                                        <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </button>
                             </div>
 
                             <!-- Screen Footer Section -->
@@ -167,9 +215,7 @@
                                 <div class="footer-title">LIVE MEMORIES</div>
                                 <!-- Carousel Dots -->
                                 <div class="carousel-dots">
-                                    <span class="dot" data-index="0"></span>
-                                    <span class="dot active" data-index="1"></span>
-                                    <span class="dot" data-index="2"></span>
+                                    <!-- Dynamic dots will be generated here by app.js -->
                                 </div>
                                 <div id="display-date" class="footer-date">MAY 15, 2026</div>
                             </div>
