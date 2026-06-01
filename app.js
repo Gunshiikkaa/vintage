@@ -530,9 +530,35 @@ function animateParticles() {
     requestAnimationFrame(animateParticles);
 }
 
-// Handle window resizing
+// Handle window resizing & scaling
+function adjustConsoleScale() {
+    const consoleEl = document.querySelector('.radio-console');
+    if (!consoleEl) return;
+    
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    
+    if (w > 992) {
+        // Standard target dimensions for desktop to fit nicely with margins
+        const targetW = 1160;
+        const targetH = 640;
+        
+        const scaleX = w / targetW;
+        const scaleY = h / targetH;
+        const scale = Math.min(1, scaleX, scaleY);
+        
+        consoleEl.style.transform = `scale(${scale})`;
+        consoleEl.style.transformOrigin = 'center center';
+    } else {
+        // Reset scaling on mobile layouts
+        consoleEl.style.transform = '';
+        consoleEl.style.transformOrigin = '';
+    }
+}
+
 window.addEventListener('resize', () => {
     resizeCanvas();
+    adjustConsoleScale();
 });
 
 /* ==========================================================================
@@ -602,6 +628,7 @@ function setupEventListeners() {
    ========================================================================== */
 function init() {
     initMarquee();
+    adjustConsoleScale();
     initializeDate();
     initYoutubePlayer();
     setupEventListeners();
